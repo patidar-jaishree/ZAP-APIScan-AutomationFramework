@@ -1,0 +1,106 @@
+---
+env:
+  contexts:
+  - name: "petStoreContext"
+    urls:
+    - "https://petstore.swagger.io"
+    includePaths:
+    - "https://petstore.swagger.io.*"
+    excludePaths: []
+    authentication:
+      parameters: {}
+      verification:
+        method: "response"
+        pollFrequency: 60
+        pollUnits: "requests"
+    sessionManagement:
+      method: "cookie"
+      parameters: {}
+  parameters:
+    failOnError: true
+    failOnWarning: false
+    progressToStdout: true
+jobs:
+- type: addOns                       
+  parameters:
+    updateAddOns: false               
+  install:                           
+  - ascanrules
+  - openapi
+- type: alertFilter
+  alertFilters:
+    - ruleId: 10021
+      ruleName: "X-Content-Type-Options Header Missing"
+      newRisk: "False Positive"
+      url: "https://petstore.swagger.io.*"
+      urlRegex: true
+- type: openapi
+  parameters:
+    apiFile: "/zap/wrk/openapi-specs/petstore.json"
+- type: script
+  parameters:
+    action: "add"
+    type: "httpsender"
+    engine: "Oracle Nashorn"
+    name: "GetToken"
+    file: "/zap/wrk/scripts/GetToken.js"
+- name: "activeScan"
+  type: "activeScan"
+  policyDefinition:
+    rules: []
+- parameters:
+    template: "traditional-xml"
+    reportDir: "/zap/wrk/petStoreXmlReport"
+    reportFile: "petStoreXmlReport"
+    reportTitle: "ZAP Scanning Report"
+    reportDescription: ""
+    displayReport: false
+  risks:
+    - "info"
+    - "low"
+    - "medium"
+    - "high"
+  confidences:
+    - "low"
+    - "medium"
+    - "high"
+    - "confirmed"
+  name: "report"
+  type: "report"
+- parameters:
+    template: "risk-confidence-html"
+    theme: "original"
+    reportDir: "/zap/wrk/petStoreHtmlReport"
+    reportFile: ""
+    reportTitle: "ZAP Scanning Report"
+    reportDescription: ""
+    displayReport: false
+  risks:
+  - "info"
+  - "low"
+  - "medium"
+  - "high"
+  confidences:
+  - "falsepositive"
+  - "low"
+  - "medium"
+  - "high"
+  - "confirmed"
+  sections:
+  - "siteRiskCounts"
+  - "responseBody"
+  - "appendix"
+  - "alertTypes"
+  - "responseHeader"
+  - "alertTypeCounts"
+  - "riskConfidenceCounts"
+  - "alerts"
+  - "aboutThisReport"
+  - "contents"
+  - "requestBody"
+  - "reportDescription"
+  - "reportParameters"
+  - "requestHeader"
+  - "summaries"
+  name: "report"
+  type: "report"
