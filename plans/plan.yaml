@@ -21,12 +21,6 @@ env:
     failOnWarning: false
     progressToStdout: true
 jobs:
-- type: addOns                       
-  parameters:
-    updateAddOns: false               
-  install:                           
-  - ascanrules
-  - openapi
 - type: alertFilter
   alertFilters:
     - ruleId: 10021
@@ -36,7 +30,7 @@ jobs:
       urlRegex: true
 - type: openapi
   parameters:
-    apiFile: "/zap/wrk/openapi-specs/petstore.json"
+    apiFile: "/zap/wrk/openapi-specs/petstore_one.json"
 - type: script
   parameters:
     action: "add"
@@ -49,29 +43,10 @@ jobs:
   policyDefinition:
     rules: []
 - parameters:
-    template: "traditional-xml"
-    reportDir: "/zap/wrk/petStoreXmlReport"
-    reportFile: "petStoreXmlReport"
-    reportTitle: "ZAP Scanning Report"
-    reportDescription: ""
-    displayReport: false
-  risks:
-    - "info"
-    - "low"
-    - "medium"
-    - "high"
-  confidences:
-    - "low"
-    - "medium"
-    - "high"
-    - "confirmed"
-  name: "report"
-  type: "report"
-- parameters:
     template: "risk-confidence-html"
     theme: "original"
-    reportDir: "/zap/wrk/petStoreHtmlReport"
-    reportFile: ""
+    reportDir: "../reports/"
+    reportFile: "petStoreHtmlReport"
     reportTitle: "ZAP Scanning Report"
     reportDescription: ""
     displayReport: false
@@ -102,5 +77,27 @@ jobs:
   - "reportParameters"
   - "requestHeader"
   - "summaries"
+  sites: []
+  name: "report"
+  type: "report"
+- parameters:
+    template: "traditional-xml"
+    reportDir: "../reports/"
+    reportFile: "petStoreXmlReport"
+    reportTitle: "ZAP Scanning Report"
+    reportDescription: ""
+    displayReport: false
+  risks:
+  - "info"
+  - "low"
+  - "medium"
+  - "high"
+  confidences:
+  - "falsepositive"
+  - "low"
+  - "medium"
+  - "high"
+  - "confirmed"
+  sites: []
   name: "report"
   type: "report"
