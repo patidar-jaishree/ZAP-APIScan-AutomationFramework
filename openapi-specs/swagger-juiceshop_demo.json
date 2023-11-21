@@ -1,0 +1,42 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "OWASP Juice Shop (v2.18.0)",
+        "description": "This is a **manually produced** documentation of **a small part** of the OWASP Juice Shop API.",
+        "version": "0.0.2",
+        "contact": {
+            "name": "Juice Shop by @kimminich (https://github.com/bkimminich/juice-shop)"
+        }
+    },
+    "schemes":["http"],
+    "host": "host.docker.internal:3000",
+    "basePath": "/",
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Start page of juice shop.\n",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "title": "ArrayOfPersons",
+                            "type": "array",
+                            "items": {
+                                "title": "Person",
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "single": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
