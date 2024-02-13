@@ -1,7 +1,7 @@
 # ZAP-AutomationFramework
 API Penetration Testing Using ZAP Automation Framework
 
-### Running Scan
+### Running Scan on Pet Store API
 
 1. Pull Docker image-
 ```
@@ -33,7 +33,7 @@ docker pull softwaresecurityproject/zap-stable
 ```
 4. Run scan
 ```
-docker container run --platform linux/arm64 -v $(pwd):/zap/wrk/:rw -t softwaresecurityproject/zap-stable bash -c "zap.sh -cmd -autorun /zap/wrk/plans/owasp_juiceshop_plan.yaml"
+docker container run --platform linux/arm64 -v $(pwd):/zap/wrk/:rw -t softwaresecurityproject/zap-stable bash -c "zap.sh -cmd -autorun /zap/wrk/plans/owasp_juiceshop_plan_docker_with_auth.yaml"
 ```
 
 ## Analysis

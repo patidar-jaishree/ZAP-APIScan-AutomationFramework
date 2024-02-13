@@ -1,0 +1,114 @@
+---
+env:
+  contexts:
+  - name: "juiceShopContext"
+    urls:
+    - "http://host.docker.internal:3000/"
+    includePaths:
+    - "http://host.docker.internal:3000/.*"
+    excludePaths: []
+    authentication:
+      parameters: {}
+      verification:
+        method: "response"
+        pollFrequency: 60
+        pollUnits: "requests"
+    sessionManagement:
+      method: "cookie"
+      parameters: {}
+  parameters:
+    failOnError: true
+    failOnWarning: false
+    progressToStdout: true
+jobs:
+- rules:
+  - description: "header1"
+    url: ""
+    matchType: "req_header_str"
+    matchString: "Products/1/view"
+    matchRegex: false
+    replacementString: "Products/99"
+    tokenProcessing: false
+  name: "replacer"
+  type: "replacer"
+- type: alertFilter
+  alertFilters:
+    - ruleId: 10021
+      ruleName: "X-Content-Type-Options Header Missing"
+      newRisk: "False Positive"
+      url: "http://host.docker.internal:3000/.*"
+      urlRegex: true
+- type: openapi
+  parameters:
+    apiFile: "/zap/wrk/openapi-specs/swagger-juiceshop_demo.json"
+    targetUrl: "http://host.docker.internal:3000/"
+- type: script
+  parameters:
+    action: "add"
+    type: "httpsender"
+    engine: "Oracle Nashorn"
+    name: "GetToken"
+    file: "/zap/wrk/scripts/GetToken_juiceshop_with_auth.js"
+- name: "activeScan"
+  type: "activeScan"
+  policyDefinition:
+    rules: []
+- parameters:
+    template: "risk-confidence-html"
+    theme: "original"
+    reportDir: "../reports/"
+    reportFile: "juiceShopHtmlReport"
+    reportTitle: "ZAP Scanning Report"
+    reportDescription: ""
+    displayReport: false
+  risks:
+  - "info"
+  - "low"
+  - "medium"
+  - "high"
+  confidences:
+  - "falsepositive"
+  - "low"
+  - "medium"
+  - "high"
+  - "confirmed"
+  sections:
+  - "siteRiskCounts"
+  - "responseBody"
+  - "appendix"
+  - "alertTypes"
+  - "responseHeader"
+  - "alertTypeCounts"
+  - "riskConfidenceCounts"
+  - "alerts"
+  - "aboutThisReport"
+  - "contents"
+  - "requestBody"
+  - "reportDescription"
+  - "reportParameters"
+  - "requestHeader"
+  - "summaries"
+  sites: []
+  name: "report"
+  type: "report"
+- parameters:
+    template: "traditional-xml"
+    reportDir: "../reports/"
+    reportFile: "juiceShopXmlReport"
+    reportTitle: "ZAP Scanning Report"
+    reportDescription: ""
+    displayReport: false
+  risks:
+  - "info"
+  - "low"
+  - "medium"
+  - "high"
+  confidences:
+  - "falsepositive"
+  - "low"
+  - "medium"
+  - "high"
+  - "confirmed"
+  sites: []
+  name: "report"
+  type: "report"
